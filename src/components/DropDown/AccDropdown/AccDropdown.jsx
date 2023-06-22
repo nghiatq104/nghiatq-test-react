@@ -103,7 +103,7 @@ const AccDropdown = memo((props) => {
         </DivAvatar>
         <DivUsername>{props.username}</DivUsername>
       </StButton>
-      <DropDown ref={dropdownRef} show={isShow}>
+      <DropDown ref={dropdownRef} show={isShow ? 1 : 0}>
         {props.children}
       </DropDown>
     </Container>

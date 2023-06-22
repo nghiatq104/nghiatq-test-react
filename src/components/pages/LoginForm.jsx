@@ -204,18 +204,18 @@ const LoginLoad = styled.div`
 const Form = () => {
   const { Login } = useContext(authContext);
   const [showPass, setShowPass] = useState(false);
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(0);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
-    setIsLogin(true);
+    setIsLogin(1);
 
     await Login(data);
 
-    setIsLogin(false);
+    setIsLogin(0);
   };
   const showPassworrd = () => {
     setShowPass(!showPass);
