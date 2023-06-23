@@ -1,7 +1,9 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useContext, useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
 import FtButton from "../Button/FtButton";
 import Api, { URL } from "../../constans/api";
+import { apiContext } from "../../context/apiContext";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   border-top: 1px solid #c9c9c9;
@@ -80,6 +82,8 @@ const SpeciesItem = memo((props) => {
   const { data } = props;
   const dropdownRef = useRef(null);
   const [showButton, setShowButton] = useState(false);
+  const { setShowModal, setLoai } = useContext(apiContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -94,6 +98,17 @@ const SpeciesItem = memo((props) => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  const handleChangePage = () => {
+    setLoai(data);
+    navigate("/loai/chi-tiet");
+  };
+
+  const handleDeleteObject = () => {
+    setShowModal(true);
+    setLoai(data);
+  };
+
   return (
     <Container>
       <DivTD>
@@ -144,11 +159,11 @@ const SpeciesItem = memo((props) => {
             icon="fa-solid fa-ellipsis"
           />
           <ModalFeature ref={dropdownRef} showbutton={showButton ? 1 : 0}>
-            <Feature>
+            <Feature onClick={() => handleChangePage()}>
               <i className="fa-solid fa-pencil"></i>
               Cập nhật
             </Feature>
-            <Feature>
+            <Feature onClick={() => handleDeleteObject()}>
               <i className="fa-solid fa-trash-can"></i>
               Xóa
             </Feature>

@@ -47,7 +47,7 @@ const AuthProvider = ({ children }) => {
       await checkAuth(token);
       // Đặt trạng thái đăng nhập thành true
       setIsAuthenticated(true);
-      navigate("/hethong");
+      navigate("/loai");
     } catch (error) {
       console.error(error);
     }

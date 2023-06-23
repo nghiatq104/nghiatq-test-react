@@ -2,6 +2,7 @@ import { memo } from "react";
 import styled from "styled-components";
 import SearchInput from "../Input/SearchInput";
 import ClsButton from "../Button/ClsButton";
+import { useNavigate } from "react-router-dom";
 
 const NavContainer = styled.div`
   width: 100%;
@@ -55,6 +56,7 @@ const DivTitle = styled.div`
   font-weight: 600;
 `;
 const NavSearch = memo(({ title, icon }) => {
+  const navigate = useNavigate();
   return (
     <>
       <TitlePage>
@@ -74,7 +76,7 @@ const NavSearch = memo(({ title, icon }) => {
             color="#fff"
             colorhover="#da3a2c"
             backcolor="#da2a1c"
-            handleclick={() => console.log(13465)}
+            handleclick={() => navigate("/loai/them-moi")}
           />
         </RightBtn>
       </NavContainer>

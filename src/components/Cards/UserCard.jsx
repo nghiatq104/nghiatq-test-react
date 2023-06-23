@@ -77,13 +77,13 @@ const UserCard = memo((props) => {
       <Toolbar>
         <ClsButton
           title="Hồ sơ"
-          handleClick={() => console.log(">>> INFO >>> : ")}
+          handleclick={() => console.log(">>> INFO >>> : ")}
         />
         <ClsButton
           colorhover="rgba(221, 0, 0, 0.2)"
           color="#da2a1c"
           title="Đăng xuất"
-          handleClick={props.handleClick}
+          handleclick={props.handleClick}
         />
       </Toolbar>
     </CardContainer>

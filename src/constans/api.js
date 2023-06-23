@@ -5,5 +5,6 @@ const Api = {
   apiMe: EndPoint + "/me",
   logout: EndPoint + "/logout",
   logo: "http://wlp.howizbiz.com/static/img/favicon.e4ca0e6e.png",
+  apiLoai: EndPoint + "/species/",
 };
 export default Api;

@@ -11,12 +11,11 @@ const StButton = styled.button`
   cursor: pointer;
   border: none;
   outline: none;
-  font-size: 18em;
   &:hover {
     background-color: rgba(0, 0, 0, 0.2);
   }
   i {
-    font-size: 1.8em;
+    font-size: 1.8rem;
     color: ${(props) => (props.color ? props.color : "#000")};
   }
 `;

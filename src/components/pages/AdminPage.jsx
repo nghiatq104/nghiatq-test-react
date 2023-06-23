@@ -2,7 +2,7 @@ import { memo } from "react";
 import styled from "styled-components";
 import { HeaderContent } from "../layouts/AdminHeader";
 import Footer from "../layouts/Footer";
-import ListSpecies from "./ListSpecies";
+import { Outlet } from "react-router-dom";
 import ApiProvider from "../../context/apiContext";
 const Container = styled.div`
   width: 100%;
@@ -27,7 +27,9 @@ const AdminPage = memo(() => {
         <HeaderContainer>
           <HeaderContent />
         </HeaderContainer>
-        <ListSpecies />
+
+        <Outlet />
+
         <Footer />
       </Container>
     </ApiProvider>

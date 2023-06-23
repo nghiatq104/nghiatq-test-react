@@ -25,7 +25,7 @@ const ClsButton = memo((props) => {
       colorhover={props.colorhover}
       backcolor={props.backcolor}
       boder={props.boder}
-      onClick={props.handleClick}
+      onClick={props.handleclick}
     >
       {props.title || props.children}
     </StButton>

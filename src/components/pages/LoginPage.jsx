@@ -38,7 +38,7 @@ const MainContainner = styled.div`
 const LoginPage = memo(() => {
   const navigate = useNavigate();
   const { isAuthenticated } = useContext(authContext);
-  isAuthenticated && navigate("/hethong");
+  isAuthenticated && navigate("/loai");
   return (
     <LoginContainer>
       <HeadContainer>

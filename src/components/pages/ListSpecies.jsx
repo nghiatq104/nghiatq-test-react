@@ -6,6 +6,9 @@ import { apiContext } from "../../context/apiContext";
 import { useMediaQuery } from "react-responsive";
 import { Select } from "antd";
 import { Pagination } from "antd";
+import TableHead from "../TableList/TableHead";
+import TableBody from "../TableList/TableRow";
+import DeleteModal from "../Modal/DeleteModal";
 
 const options = [];
 for (let i = 10; i < 36; i++) {
@@ -23,7 +26,6 @@ const MainContainer = styled.div`
   padding: 20px 32px;
   margin-top: 60px;
   margin-bottom: 33px;
-  overflow: scroll;
   @media (min-width: 768px) {
     height: calc(100vh - 93px);
   }
@@ -33,13 +35,42 @@ const SortDiv = styled.div`
   width: 100%;
   padding: 0 16px;
 `;
-
 const PaginationDiv = styled.div`
   width: 100%;
   height: 42px;
   font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+  .ant-pagination-item-active {
+    color: #fff;
+    border: none;
+    border-radius: 0;
+    background-color: #da2a1c;
+
+    &:hover {
+      background-color: #da3a2c;
+    }
+  }
   ul {
+    .ant-pagination-prev {
+      margin-left: 20%;
+      @media (max-width: 800px) {
+        margin-left: 0;
+      }
+    }
+    .ant-pagination-options {
+      float: right;
+    }
     li {
+      .ant-select-selection {
+        font-size: 1.4rem;
+      }
+      .ant-select-dropdown {
+        .ant-select-item-option-content {
+          font-size: 1.4rem;
+        }
+      }
       a {
         font-size: 1.6rem;
       }
@@ -55,40 +86,128 @@ const PaginationDiv = styled.div`
   }
 `;
 
-const ListSpecies = memo(() => {
-  const { dataSpecies } = useContext(apiContext);
+const PageProperty = styled.div`
+  flex: 20%;
+  font-size: 1.4rem;
+`;
+
+const TableWraper = styled.div`
+  width: 100%;
+  height: calc(100vh - 280px);
+  overflow: auto;
+  thead {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 1;
+  }
+  table {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    tbody {
+      width: 100%;
+      height: 100%;
+      overflow-x: scroll;
+    }
+  }
+`;
+
+const ListSpecies = memo(({ onChangePage }) => {
+  const { dataSpecies, currentPage, setCurrentPage, perpage, setPerPage } =
+    useContext(apiContext);
   const ListData = dataSpecies.list;
+  const pagination = dataSpecies.pagination;
+
+  const handlePageChange = (page, pageSize) => {
+    setCurrentPage(page);
+    setPerPage(pageSize);
+  };
+
   const isMobile = useMediaQuery({ maxWidth: 768 });
   const MobileRender =
     ListData &&
-    ListData.map((data) => <SpeciesItem key={data.id} data={data} />);
+    ListData.map((data) => {
+      return (
+        <>
+          <SpeciesItem key={data.id} data={data} />
+        </>
+      );
+    });
 
   return (
-    <MainContainer>
-      <NavSearch icon="fa-solid fa-shield-cat" title="Loài nguy cấp quý hiếm" />
-      <SortDiv>
-        <Select
-          mode="tags"
-          style={{
-            width: "100%",
-          }}
-          onChange={handleChange}
-          tokenSeparators={[","]}
-          options={options}
+    <>
+      <DeleteModal />
+      <MainContainer>
+        <NavSearch
+          onChangePage={onChangePage}
+          icon="fa-solid fa-shield-cat"
+          title="Loài nguy cấp quý hiếm"
         />
-      </SortDiv>
-      {isMobile ? MobileRender : <></>}
-      <PaginationDiv>
-        <Pagination
-          style={{
-            fontSize: "16px",
-            height: "100%",
-          }}
-          defaultCurrent={6}
-          total={500}
-        />
-      </PaginationDiv>
-    </MainContainer>
+
+        {isMobile ? (
+          <>
+            <SortDiv>
+              <Select
+                mode="tags"
+                style={{
+                  width: "100%",
+                }}
+                onChange={handleChange}
+                tokenSeparators={[","]}
+                options={options}
+              />
+            </SortDiv>
+            {MobileRender}
+          </>
+        ) : (
+          <TableWraper>
+            <table>
+              <thead>
+                <TableHead />
+              </thead>
+              <tbody>
+                {ListData &&
+                  ListData.map((data) => {
+                    return (
+                      <>
+                        <TableBody key={data.id} data={data} />
+                      </>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </TableWraper>
+        )}
+
+        <PaginationDiv>
+          <PageProperty>
+            {pagination && (
+              <>
+                {pagination.itemsPerPage * (currentPage - 1) + 1}-
+                {pagination.itemsPerPage * currentPage >= pagination.total
+                  ? pagination.total
+                  : pagination.itemsPerPage * currentPage}
+                /{pagination.total}
+              </>
+            )}
+          </PageProperty>
+          <Pagination
+            style={{
+              fontSize: "16px",
+              height: "100%",
+              width: "100%",
+              flex: "80%",
+            }}
+            defaultCurrent={1}
+            current={currentPage}
+            defaultPageSize={perpage}
+            total={pagination && pagination.total}
+            onChange={handlePageChange}
+          />
+        </PaginationDiv>
+      </MainContainer>
+    </>
   );
 });
 

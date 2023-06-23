@@ -1,6 +1,7 @@
-import { memo } from "react";
+import { memo, useContext } from "react";
 import styled from "styled-components";
-
+import { apiContext } from "../../context/apiContext";
+import useDebounce from "../../hook/useDebounce";
 const InputDiv = styled.div`
   width: 100%;
   height: 100%;
@@ -32,10 +33,14 @@ const InputDiv = styled.div`
 `;
 
 const SearchInput = memo(() => {
+  const { setSearchText } = useContext(apiContext);
+  const handleOnChange = useDebounce((e) => {
+    setSearchText(e.target.value);
+  }, 500);
   return (
     <InputDiv>
       <i className="fa-solid fa-magnifying-glass"></i>
-      <input placeholder="Tìm kiếm theo tên" />
+      <input onChange={handleOnChange} placeholder="Tìm kiếm theo tên" />
     </InputDiv>
   );
 });
