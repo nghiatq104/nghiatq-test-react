@@ -15,6 +15,9 @@ const TableRow = styled.tr`
     align-items: center;
     justify-content: center;
     padding: 0 16px;
+    &:first-child {
+      flex: 14%;
+    }
   }
 `;
 

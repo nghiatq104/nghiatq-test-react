@@ -2,6 +2,8 @@ import axios from "axios";
 import { createContext, useState } from "react";
 import Api from "../constans/api";
 import { useNavigate } from "react-router-dom";
+import { notification } from "antd";
+
 
 export const authContext = createContext({ auth: null });
 let _token = localStorage.getItem("token");
@@ -11,7 +13,7 @@ const AuthProvider = ({ children }) => {
   const [isChecking, setIsChecking] = useState(false);
   const [token, setToken] = useState(_token);
 
-  const checkAuth = async (token) => {
+  const getMe = async (token) => {
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -32,7 +34,7 @@ const AuthProvider = ({ children }) => {
     }
   };
   if (!isChecking && !isAuthenticated && token) {
-    checkAuth(token);
+    getMe(token);
   }
 
   // Hàm đăng nhập
@@ -44,12 +46,13 @@ const AuthProvider = ({ children }) => {
       setToken(token);
       // Lưu token vào localStorage hoặc trạng thái ứng dụng
       localStorage.setItem("token", token);
-      await checkAuth(token);
+      await getMe(token);
       // Đặt trạng thái đăng nhập thành true
       setIsAuthenticated(true);
       navigate("/loai");
     } catch (error) {
       console.error(error);
+      openNotification('top',"error","Lỗi","Tên đăng nhập hoặc mật khẩu không chính xác")
     }
   };
 
@@ -65,6 +68,9 @@ const AuthProvider = ({ children }) => {
       await axios.post(Api.logout, _token, config);
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      localStorage.removeItem("sach_do");
+      localStorage.removeItem("phan_loai");
+
       setToken(null);
 
       // Đặt trạng thái đăng nhập thành false
@@ -74,6 +80,15 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const [api, contextHolder] = notification.useNotification();
+  const openNotification = (placement, type='info',message,description) => {
+    api[type]({
+      message: message,
+      description: description,
+    });
+  };
+
+
   return (
     <authContext.Provider
       value={{
@@ -82,6 +97,9 @@ const AuthProvider = ({ children }) => {
         Login,
         Logout,
         token,
+        contextHolder,
+        openNotification
+
       }}
     >
       {children}

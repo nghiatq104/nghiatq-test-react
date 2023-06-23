@@ -1,4 +1,4 @@
-import { memo, useContext } from "react";
+import { memo, useContext, useEffect } from "react";
 import styled from "styled-components";
 import NavSearch from "../Navigation/NavSearch";
 import SpeciesItem from "../Item/SpeciesItem";
@@ -9,17 +9,18 @@ import { Pagination } from "antd";
 import TableHead from "../TableList/TableHead";
 import TableBody from "../TableList/TableRow";
 import DeleteModal from "../Modal/DeleteModal";
+import axios from "axios";
+import Api from "../../constans/api";
+import { authContext } from "../../context/authContext";
 
-const options = [];
-for (let i = 10; i < 36; i++) {
-  options.push({
-    value: i.toString(36) + i,
-    label: i.toString(36) + i,
-  });
-}
-const handleChange = (value) => {
-  console.log(`selected ${value}`);
-};
+const options = [
+  {
+    value: 1,
+    label: "Bộ",
+  },
+  { value: 2, label: "Chi" },
+  { value: 3, label: "Họ" },
+];
 
 const MainContainer = styled.div`
   width: 100%;
@@ -40,8 +41,8 @@ const PaginationDiv = styled.div`
   height: 42px;
   font-size: 1.6rem;
   display: flex;
+  padding-top: 5px;
   align-items: center;
-  z-index: 10;
   .ant-pagination-item-active {
     color: #fff;
     border: none;
@@ -99,7 +100,6 @@ const TableWraper = styled.div`
     position: sticky;
     top: 0;
     background-color: #fff;
-    z-index: 1;
   }
   table {
     width: 100%;
@@ -114,6 +114,9 @@ const TableWraper = styled.div`
 `;
 
 const ListSpecies = memo(({ onChangePage }) => {
+  let token = localStorage.getItem("token");
+  const dataSachDo = JSON.parse(localStorage.getItem("sach_do"));
+  const { contextHolder } = useContext(authContext);
   const { dataSpecies, currentPage, setCurrentPage, perpage, setPerPage } =
     useContext(apiContext);
   const ListData = dataSpecies.list;
@@ -124,19 +127,35 @@ const ListSpecies = memo(({ onChangePage }) => {
     setPerPage(pageSize);
   };
 
+  useEffect(() => {
+    const getData = async () => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const responseRedBook = await axios.get(Api.sach_do);
+      localStorage.setItem("sach_do", JSON.stringify(responseRedBook.data));
+
+      const responsePhanLoai = await axios.get(Api.phan_loai_hoc, config);
+      localStorage.setItem("phan_loai", JSON.stringify(responsePhanLoai.data));
+    };
+    if (!dataSachDo) {
+      getData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const isMobile = useMediaQuery({ maxWidth: 768 });
   const MobileRender =
     ListData &&
-    ListData.map((data) => {
-      return (
-        <>
-          <SpeciesItem key={data.id} data={data} />
-        </>
-      );
+    ListData.map((data, i) => {
+      return <SpeciesItem key={i} data={data} />;
     });
 
   return (
     <>
+      {contextHolder}
       <DeleteModal />
       <MainContainer>
         <NavSearch
@@ -153,7 +172,6 @@ const ListSpecies = memo(({ onChangePage }) => {
                 style={{
                   width: "100%",
                 }}
-                onChange={handleChange}
                 tokenSeparators={[","]}
                 options={options}
               />
@@ -168,12 +186,8 @@ const ListSpecies = memo(({ onChangePage }) => {
               </thead>
               <tbody>
                 {ListData &&
-                  ListData.map((data) => {
-                    return (
-                      <>
-                        <TableBody key={data.id} data={data} />
-                      </>
-                    );
+                  ListData.map((data, i) => {
+                    return <TableBody key={i} data={data} />;
                   })}
               </tbody>
             </table>

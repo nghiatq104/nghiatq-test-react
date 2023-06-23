@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import FormInput from "../Form/FormInput";
 
 const Container = styled.div`
   margin-top: 60px;
@@ -48,6 +49,7 @@ const EditPage = memo(() => {
           VỆ
         </h2>
       </TitleDiv>
+      <FormInput />
     </Container>
   );
 });

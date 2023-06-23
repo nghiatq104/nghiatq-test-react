@@ -12,13 +12,16 @@ const TableRowBody = styled.tr`
   border-bottom: 1px solid #f5f5f5;
   overflow: hidden;
   td {
-    min-height: 64px;
+    min-height: 56px;
     flex: 1;
     font-size: 1.4rem;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 16px;
+    &:first-child {
+      flex: 14%;
+    }
   }
 `;
 const Feature = styled.div`

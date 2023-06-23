@@ -37,17 +37,20 @@ const MainContainner = styled.div`
 
 const LoginPage = memo(() => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useContext(authContext);
+  const { isAuthenticated, contextHolder } = useContext(authContext);
   isAuthenticated && navigate("/loai");
   return (
-    <LoginContainer>
-      <HeadContainer>
-        <Header title={HeaderTitle} image={logoImage} headcolor="#fff" />
-      </HeadContainer>
-      <MainContainner>
-        <LoginForm />
-      </MainContainner>
-    </LoginContainer>
+    <>
+      {contextHolder}
+      <LoginContainer>
+        <HeadContainer>
+          <Header title={HeaderTitle} image={logoImage} headcolor="#fff" />
+        </HeadContainer>
+        <MainContainner>
+          <LoginForm />
+        </MainContainner>
+      </LoginContainer>
+    </>
   );
 });
 

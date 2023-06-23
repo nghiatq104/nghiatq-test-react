@@ -11,12 +11,13 @@ const Container = styled.div`
   }
 `;
 const DropDown = styled.div`
-  z-index: 10;
+  z-index: 30;
   width: 250px;
   height: 210px;
   padding: 4px;
   border-radius: 5px;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+  background-color: #fff;
   position: absolute;
   left: -30%;
   top: 115%;

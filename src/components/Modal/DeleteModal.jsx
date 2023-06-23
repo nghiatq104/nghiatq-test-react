@@ -4,6 +4,7 @@ import { apiContext } from "../../context/apiContext";
 import ClsButton from "../Button/ClsButton";
 import axios from "axios";
 import Api from "../../constans/api";
+import { authContext } from "../../context/authContext";
 
 const Container = styled.div`
   position: fixed;
@@ -24,7 +25,6 @@ const Container = styled.div`
 `;
 const ModalDiv = styled.div`
   width: 450px;
-  min-height: 30%;
   border-radius: 20px;
   background-color: #fff;
 `;
@@ -78,6 +78,8 @@ const ModalFooter = styled.div`
 `;
 let _token = localStorage.getItem("token");
 const DeleteModal = memo(() => {
+  const { openNotification } = useContext(authContext);
+
   const { showModal, setShowModal, loai, setLoai, setReLoad, reload } =
     useContext(apiContext);
 
@@ -97,7 +99,7 @@ const DeleteModal = memo(() => {
       setShowModal(false);
       setLoai({});
       setReLoad(!reload);
-      console.log("Xoa thanh cong");
+      openNotification("top", "success", "Thành công", "Xóa thành công");
     } catch (error) {
       console.log(error);
     }
