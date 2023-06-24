@@ -168,9 +168,11 @@ const ListSpecies = memo(({ onChangePage }) => {
               <thead>
                 <TableHead />
               </thead>
-              <LoadingHorizontal load={loadEvent} />
 
               <tbody>
+                <tr>
+                  <LoadingHorizontal load={loadEvent} />
+                </tr>
                 {ListData &&
                   ListData.map((data, i) => {
                     return <TableBody key={i} data={data} />;
