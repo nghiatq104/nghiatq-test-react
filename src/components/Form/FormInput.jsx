@@ -121,6 +121,7 @@ const family = JSON.parse(sessionStorage.getItem("family"));
 const genus = JSON.parse(sessionStorage.getItem("genus"));
 let token = localStorage.getItem("token");
 const FormInput = memo(() => {
+  const [disableButton, setDisableButton] = useState(false);
   const { loai } = useContext(apiContext);
   const { openNotification } = useContext(authContext);
   const [errorsValidate, setErrorsValidate] = useState([]);
@@ -235,6 +236,7 @@ const FormInput = memo(() => {
         Authorization: `Bearer ${token}`,
       },
     };
+    setDisableButton(true);
     if (loai.ten) {
       try {
         await axios.put(Api.apiLoai + "/" + loai.id, speciesForm, config);
@@ -242,6 +244,8 @@ const FormInput = memo(() => {
       } catch (error) {
         openNotification("top", "error", "Thất bại", "Sửa thất bại");
         setErrorsValidate(error.response.data.errors);
+      } finally {
+        setDisableButton(false);
       }
     } else {
       try {
@@ -250,6 +254,8 @@ const FormInput = memo(() => {
       } catch (error) {
         openNotification("top", "error", "Thất bại", "Thêm thất bại");
         setErrorsValidate(error.response.data.errors);
+      } finally {
+        setDisableButton(false);
       }
     }
   };
@@ -654,9 +660,10 @@ const FormInput = memo(() => {
 
       <ButtonWrapper>
         <ClsButton
+          disabled={disableButton}
           title={loai.ten ? "Cập nhật" : "+ Thêm mới"}
           color="#fff"
-          colorhover="#da3a2c"
+          colorhover="#cc592f"
           backcolor="#da2a1c"
           handleclick={(e) => onSubmit(e)}
         />

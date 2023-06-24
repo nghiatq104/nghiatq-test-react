@@ -21,6 +21,7 @@ const StButton = styled.button`
 const ClsButton = memo((props) => {
   return (
     <StButton
+      disabled={props.disabled}
       color={props.color}
       colorhover={props.colorhover}
       backcolor={props.backcolor}

@@ -11,20 +11,25 @@ const ApiProvider = ({ children }) => {
   const [showModal, setShowModal] = useState(false);
   const [loai, setLoai] = useState({});
   const [reload, setReLoad] = useState(false);
-
-
+const [loadEvent,setLoadEvent] = useState(false)
 
 
   const param = `/species?paginate=true&page=${currentPage}&perpage=${perpage}&with=roles,createdBy&search=${searchText}&inactive=-1`;
   const url = EndPoint + param;
   useEffect(() => {
     const GetData = async () => {
+      setLoadEvent(true);
       try {
         const response = await axios.get(url);
         setDataSpecies(response.data);
       } catch (error) {
         console.log(error);
       }
+      finally{
+        setLoadEvent(false);
+      }
+      
+
     };
     GetData();
   }, [url, reload]);
@@ -44,6 +49,7 @@ const ApiProvider = ({ children }) => {
         setLoai,
         reload,
         setReLoad,
+        loadEvent
       }}
     >
       {children}

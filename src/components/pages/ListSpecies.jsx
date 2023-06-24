@@ -1,4 +1,4 @@
-import { memo, useContext, useEffect } from "react";
+import { memo, useContext } from "react";
 import styled from "styled-components";
 import NavSearch from "../Navigation/NavSearch";
 import SpeciesItem from "../Item/SpeciesItem";
@@ -9,9 +9,8 @@ import { Pagination } from "antd";
 import TableHead from "../TableList/TableHead";
 import TableBody from "../TableList/TableRow";
 import DeleteModal from "../Modal/DeleteModal";
-import axios from "axios";
-import Api from "../../constans/api";
 import { authContext } from "../../context/authContext";
+import LoadingHorizontal from "../LoadingHorizontal";
 
 const options = [
   {
@@ -114,11 +113,15 @@ const TableWraper = styled.div`
 `;
 
 const ListSpecies = memo(({ onChangePage }) => {
-  let token = localStorage.getItem("token");
-
   const { contextHolder } = useContext(authContext);
-  const { dataSpecies, currentPage, setCurrentPage, perpage, setPerPage } =
-    useContext(apiContext);
+  const {
+    loadEvent,
+    dataSpecies,
+    currentPage,
+    setCurrentPage,
+    perpage,
+    setPerPage,
+  } = useContext(apiContext);
   const ListData = dataSpecies.list;
   const pagination = dataSpecies.pagination;
 
@@ -165,6 +168,8 @@ const ListSpecies = memo(({ onChangePage }) => {
               <thead>
                 <TableHead />
               </thead>
+              <LoadingHorizontal load={loadEvent} />
+
               <tbody>
                 {ListData &&
                   ListData.map((data, i) => {
