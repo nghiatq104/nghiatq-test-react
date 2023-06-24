@@ -202,6 +202,7 @@ const ListSpecies = memo(({ onChangePage }) => {
               flex: "80%",
             }}
             defaultCurrent={1}
+            pageSizeOptions={[5, 10, 20, 50]}
             current={currentPage}
             defaultPageSize={perpage}
             total={pagination && pagination.total}
