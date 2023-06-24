@@ -1,7 +1,9 @@
-import { memo } from "react";
+import { memo, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import FormInput from "../Form/FormInput";
+import { authContext } from "../../context/authContext";
+import { apiContext } from "../../context/apiContext";
 
 const Container = styled.div`
   margin: 60px 0 33px 0;
@@ -37,20 +39,32 @@ const TitleDiv = styled.div`
 `;
 const EditPage = memo(() => {
   const navigate = useNavigate();
+  const { setReLoad, reload, setLoai } = useContext(apiContext);
 
+  const { contextHolder } = useContext(authContext);
   return (
-    <Container>
-      <TitleDiv>
-        <button onClick={() => navigate("/loai")}>
-          <i className="fa-solid fa-arrow-left"></i>
-        </button>
-        <h2>
-          THÔNG TIN VỀ HIỆN TRẠNG LOÀI NGUY CẤP, QUÝ, HIẾM CẦN ĐƯỢC ƯU TIÊN BẢO
-          VỆ
-        </h2>
-      </TitleDiv>
-      <FormInput />
-    </Container>
+    <>
+      {contextHolder}
+
+      <Container>
+        <TitleDiv>
+          <button
+            onClick={() => {
+              setReLoad(!reload);
+              setLoai({});
+              navigate("/loai");
+            }}
+          >
+            <i className="fa-solid fa-arrow-left"></i>
+          </button>
+          <h2>
+            THÔNG TIN VỀ HIỆN TRẠNG LOÀI NGUY CẤP, QUÝ, HIẾM CẦN ĐƯỢC ƯU TIÊN
+            BẢO VỆ
+          </h2>
+        </TitleDiv>
+        <FormInput />
+      </Container>
+    </>
   );
 });
 

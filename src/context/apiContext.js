@@ -3,7 +3,6 @@ import { createContext, useEffect, useState } from "react";
 import { EndPoint } from "../constans/api";
 
 export const apiContext = createContext({});
-
 const ApiProvider = ({ children }) => {
   const [dataSpecies, setDataSpecies] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -12,6 +11,9 @@ const ApiProvider = ({ children }) => {
   const [showModal, setShowModal] = useState(false);
   const [loai, setLoai] = useState({});
   const [reload, setReLoad] = useState(false);
+
+
+
 
   const param = `/species?paginate=true&page=${currentPage}&perpage=${perpage}&with=roles,createdBy&search=${searchText}&inactive=-1`;
   const url = EndPoint + param;

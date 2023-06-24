@@ -1,9 +1,11 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import ClsButton from "../Button/ClsButton";
 import { Select } from "antd";
 import axios from "axios";
-import Api from "../../constans/api";
+import Api, { YEARS } from "../../constans/api";
+import { authContext } from "../../context/authContext";
+import { apiContext } from "../../context/apiContext";
 
 const FormWrapper = styled.form`
   width: 100%;
@@ -119,50 +121,69 @@ const family = JSON.parse(sessionStorage.getItem("family"));
 const genus = JSON.parse(sessionStorage.getItem("genus"));
 let token = localStorage.getItem("token");
 const FormInput = memo(() => {
+  const { loai } = useContext(apiContext);
+  const { openNotification } = useContext(authContext);
   const [errorsValidate, setErrorsValidate] = useState([]);
-  const [kingdomList, setKingdomList] = useState(kingdom);
   const [phylumList, setPhylumList] = useState(phylum);
-  console.log(phylumList);
-  const [speciesForm, setSpeciesForm] = useState({
-    attachments: [],
-    class_id: "",
-    cong_bo: true,
-    dac_diem_loai: "",
-    dac_diem_sinh_thai: "",
-    family_id: "",
-    genus_id: "",
-    gia_tri_loai: "",
-    isTrusted: true,
-    is_loai_dac_huu: null,
-    iucns: [],
-    kingdom_id: "",
-    loai_noi_bat: false,
-    minh_hoa_attachments: [],
-    nghi_dinhs: [],
-    nguon_du_lieu: "",
-    order_id: "",
-    phylum_id: "",
-    qrcode_color: "#fff",
-    sach_dos: [],
-    show_qrcode: true,
-    sinh_canh_bi_chia_cat_suy_giam: {
-      mo_ta_chi_tiet: "",
-      noi_cu_tru_hoac_phan_bo: "Không xác định",
-      su_suy_giam_lien_tuc_khu_vuc_phan_bo: "Không xác định",
-      thong_tin_khac: "",
-    },
-    su_suy_giam_quan_the: {
-      mo_ta_chi_tiet: "",
-      suy_giam_quan_the_theo_quan_sat: "Không xác định",
-      suy_giam_quan_the_theo_thoi_diem_danh_gia: "Không xác định",
-      thong_tin_khac: "",
-    },
-    ten_dia_phuong: "",
-    ten: "",
-    ten_khoa_hoc: "",
-    ten_tac_gia: "",
-    toa_dos: [],
+  const [classList, setClassList] = useState(CLASS);
+  const [orderList, setOderList] = useState(order);
+  const [familyList, setFamilyList] = useState(family);
+  const [genusList, setGenusList] = useState(genus);
+  const [sachdo, setSachDo] = useState({
+    nam: "2023",
+    id: loai.sach_dos ? loai.sach_dos[0].id : "",
   });
+  const [IUCNitem, setIUCNitem] = useState({
+    nam: "2023",
+    id: loai.iucns ? loai.iucns[0].id : "",
+  });
+  const ListIUCN = iucn && iucn[0].childs;
+  const ListRedbook = redbook && redbook[0].childs;
+
+  const [speciesForm, setSpeciesForm] = useState(
+    loai.id
+      ? loai
+      : {
+          attachments: [],
+          class_id: "",
+          cong_bo: true,
+          dac_diem_loai: "",
+          dac_diem_sinh_thai: "",
+          family_id: "",
+          genus_id: "",
+          gia_tri_loai: "",
+          isTrusted: true,
+          is_loai_dac_huu: null,
+          iucns: [],
+          kingdom_id: "",
+          loai_noi_bat: false,
+          minh_hoa_attachments: [],
+          nghi_dinhs: [],
+          nguon_du_lieu: "",
+          order_id: "",
+          phylum_id: "",
+          qrcode_color: "#fff",
+          sach_dos: [],
+          show_qrcode: true,
+          sinh_canh_bi_chia_cat_suy_giam: {
+            mo_ta_chi_tiet: "",
+            noi_cu_tru_hoac_phan_bo: "Không xác định",
+            su_suy_giam_lien_tuc_khu_vuc_phan_bo: "Không xác định",
+            thong_tin_khac: "",
+          },
+          su_suy_giam_quan_the: {
+            mo_ta_chi_tiet: "",
+            suy_giam_quan_the_theo_quan_sat: "Không xác định",
+            suy_giam_quan_the_theo_thoi_diem_danh_gia: "Không xác định",
+            thong_tin_khac: "",
+          },
+          ten_dia_phuong: "",
+          ten: "",
+          ten_khoa_hoc: "",
+          ten_tac_gia: "",
+          toa_dos: [],
+        }
+  );
 
   useEffect(() => {
     if (speciesForm.kingdom_id) {
@@ -170,7 +191,42 @@ const FormInput = memo(() => {
         phylum.filter((data) => data.parent_id == speciesForm.kingdom_id)
       );
     }
-  }, [speciesForm.kingdom_id]);
+    if (speciesForm.phylum_id) {
+      setClassList(
+        CLASS.filter((data) => data.parent_id == speciesForm.phylum_id)
+      );
+    }
+    if (speciesForm.class_id) {
+      setOderList(
+        order.filter((data) => data.parent_id == speciesForm.class_id)
+      );
+    }
+    if (speciesForm.order_id) {
+      setFamilyList(
+        family.filter((data) => data.parent_id == speciesForm.order_id)
+      );
+    }
+    if (speciesForm.family_id) {
+      setGenusList(
+        genus.filter((data) => data.parent_id == speciesForm.family_id)
+      );
+    }
+  }, [
+    speciesForm.kingdom_id,
+    speciesForm.phylum_id,
+    speciesForm.class_id,
+    speciesForm.order_id,
+    speciesForm.family_id,
+  ]);
+
+  useEffect(() => {
+    setSpeciesForm({
+      ...speciesForm,
+      iucns: [IUCNitem],
+      sach_dos: [sachdo],
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sachdo, IUCNitem]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -179,10 +235,22 @@ const FormInput = memo(() => {
         Authorization: `Bearer ${token}`,
       },
     };
-    try {
-      await axios.post(Api.apiLoai, speciesForm, config);
-    } catch (error) {
-      setErrorsValidate(error.response.data.errors);
+    if (loai.ten) {
+      try {
+        await axios.put(Api.apiLoai + "/" + loai.id, speciesForm, config);
+        openNotification("top", "success", "Thành công", "Sửa thành công");
+      } catch (error) {
+        openNotification("top", "error", "Thất bại", "Sửa thất bại");
+        setErrorsValidate(error.response.data.errors);
+      }
+    } else {
+      try {
+        await axios.post(Api.apiLoai, speciesForm, config);
+        openNotification("top", "success", "Thành công", "Thêm thành công");
+      } catch (error) {
+        openNotification("top", "error", "Thất bại", "Thêm thất bại");
+        setErrorsValidate(error.response.data.errors);
+      }
     }
   };
   return (
@@ -237,7 +305,7 @@ const FormInput = memo(() => {
             <InputLabel>Tên tác giả</InputLabel>
             <Input>
               <input
-                value={speciesForm.ten_tac_gia}
+                value={speciesForm.ten_tac_gia ? speciesForm.ten_tac_gia : ""}
                 onChange={(e) =>
                   setSpeciesForm({
                     ...speciesForm,
@@ -255,7 +323,9 @@ const FormInput = memo(() => {
           <InputLabel>Tên địa phương</InputLabel>
           <Input>
             <input
-              value={speciesForm.ten_dia_phuong}
+              value={
+                speciesForm.ten_dia_phuong ? speciesForm.ten_dia_phuong : ""
+              }
               onChange={(e) =>
                 setSpeciesForm({
                   ...speciesForm,
@@ -271,7 +341,7 @@ const FormInput = memo(() => {
           <InputLabel>Nguồn dữ liệu</InputLabel>
           <Input>
             <input
-              value={speciesForm.nguon_du_lieu}
+              value={speciesForm.nguon_du_lieu ? speciesForm.nguon_du_lieu : ""}
               onChange={(e) =>
                 setSpeciesForm({
                   ...speciesForm,
@@ -308,12 +378,15 @@ const FormInput = memo(() => {
                   });
                 }}
                 allowClear
-                options={kingdom.map((data) => {
-                  return {
-                    label: data.ten,
-                    value: data.uuid,
-                  };
-                })}
+                options={
+                  kingdom &&
+                  kingdom.map((data) => {
+                    return {
+                      label: data.ten_khoa_hoc,
+                      value: data.uuid,
+                    };
+                  })
+                }
               />
             </SeclectOptionWrapper>
             {errorsValidate.kingdom_id && (
@@ -340,12 +413,15 @@ const FormInput = memo(() => {
                   })
                 }
                 allowClear
-                options={phylumList.map((data) => {
-                  return {
-                    label: data.ten,
-                    value: data.uuid,
-                  };
-                })}
+                options={
+                  phylum &&
+                  phylumList.map((data) => {
+                    return {
+                      label: data.ten_khoa_hoc,
+                      value: data.uuid,
+                    };
+                  })
+                }
               />
             </SeclectOptionWrapper>
             {errorsValidate.phylum_id && (
@@ -359,7 +435,7 @@ const FormInput = memo(() => {
             <SeclectOptionWrapper>
               <Select
                 defaultValue=""
-                value={speciesForm.kingdom_id}
+                value={speciesForm.class_id}
                 style={{
                   width: "100%",
                   height: "100%",
@@ -367,16 +443,19 @@ const FormInput = memo(() => {
                 onChange={(value) =>
                   setSpeciesForm({
                     ...speciesForm,
-                    kingdom_id: value,
+                    class_id: value,
                   })
                 }
                 allowClear
-                options={kingdom.map((data) => {
-                  return {
-                    label: data.ten,
-                    value: data.uuid,
-                  };
-                })}
+                options={
+                  CLASS &&
+                  classList.map((data) => {
+                    return {
+                      label: data.ten_khoa_hoc,
+                      value: data.uuid,
+                    };
+                  })
+                }
               />
             </SeclectOptionWrapper>
             {errorsValidate.class_id && (
@@ -392,7 +471,7 @@ const FormInput = memo(() => {
             <SeclectOptionWrapper>
               <Select
                 defaultValue=""
-                value={speciesForm.kingdom_id}
+                value={speciesForm.order_id}
                 style={{
                   width: "100%",
                   height: "100%",
@@ -400,16 +479,19 @@ const FormInput = memo(() => {
                 onChange={(value) =>
                   setSpeciesForm({
                     ...speciesForm,
-                    kingdom_id: value,
+                    order_id: value,
                   })
                 }
                 allowClear
-                options={kingdom.map((data) => {
-                  return {
-                    label: data.ten,
-                    value: data.uuid,
-                  };
-                })}
+                options={
+                  order &&
+                  orderList.map((data) => {
+                    return {
+                      label: data.ten_khoa_hoc,
+                      value: data.uuid,
+                    };
+                  })
+                }
               />
             </SeclectOptionWrapper>
             {errorsValidate.order_id && (
@@ -423,7 +505,7 @@ const FormInput = memo(() => {
             <SeclectOptionWrapper>
               <Select
                 defaultValue=""
-                value={speciesForm.kingdom_id}
+                value={speciesForm.family_id}
                 style={{
                   width: "100%",
                   height: "100%",
@@ -431,16 +513,19 @@ const FormInput = memo(() => {
                 onChange={(value) =>
                   setSpeciesForm({
                     ...speciesForm,
-                    kingdom_id: value,
+                    family_id: value,
                   })
                 }
                 allowClear
-                options={kingdom.map((data) => {
-                  return {
-                    label: data.ten,
-                    value: data.uuid,
-                  };
-                })}
+                options={
+                  family &&
+                  familyList.map((data) => {
+                    return {
+                      label: data.ten_khoa_hoc,
+                      value: data.uuid,
+                    };
+                  })
+                }
               />
             </SeclectOptionWrapper>
             {errorsValidate.family_id && (
@@ -454,7 +539,7 @@ const FormInput = memo(() => {
             <SeclectOptionWrapper>
               <Select
                 defaultValue=""
-                value={speciesForm.kingdom_id}
+                value={speciesForm.genus_id}
                 style={{
                   width: "100%",
                   height: "100%",
@@ -462,16 +547,19 @@ const FormInput = memo(() => {
                 onChange={(value) =>
                   setSpeciesForm({
                     ...speciesForm,
-                    kingdom_id: value,
+                    genus_id: value,
                   })
                 }
                 allowClear
-                options={kingdom.map((data) => {
-                  return {
-                    label: data.ten,
-                    value: data.uuid,
-                  };
-                })}
+                options={
+                  genus &&
+                  genusList.map((data) => {
+                    return {
+                      label: data.ten_khoa_hoc,
+                      value: data.uuid,
+                    };
+                  })
+                }
               />
             </SeclectOptionWrapper>
             {errorsValidate.genus_id && (
@@ -488,14 +576,35 @@ const FormInput = memo(() => {
             <FlexDiv>
               <Div>
                 <InputLabel>Năm</InputLabel>
-                <select>
-                  <option value=""></option>
+                <select
+                  value={sachdo.nam}
+                  onChange={(e) =>
+                    setSachDo({ ...sachdo, nam: e.target.value })
+                  }
+                >
+                  <option value={sachdo.nam}>{sachdo.nam}</option>
+                  {YEARS.map((data) => (
+                    <option key={data.nam} value={data.nam}>
+                      {data.nam}
+                    </option>
+                  ))}
                 </select>
               </Div>
               <Div>
                 <InputLabel>Hiện trạng</InputLabel>
-                <select>
+                <select
+                  value={sachdo.id}
+                  onChange={(e) => setSachDo({ ...sachdo, id: e.target.value })}
+                >
                   <option value=""></option>
+                  {ListRedbook &&
+                    ListRedbook.map((data) => {
+                      return (
+                        <option key={data.id} value={data.id}>
+                          {data.ma_danh_muc}-{data.ten}
+                        </option>
+                      );
+                    })}
                 </select>
               </Div>
             </FlexDiv>
@@ -505,14 +614,37 @@ const FormInput = memo(() => {
             <FlexDiv>
               <Div>
                 <InputLabel>Năm</InputLabel>
-                <select>
-                  <option value=""></option>
+                <select
+                  value={IUCNitem.nam}
+                  onChange={(e) =>
+                    setIUCNitem({ ...IUCNitem, nam: e.target.value })
+                  }
+                >
+                  <option value={IUCNitem.nam}>{IUCNitem.nam}</option>
+                  {YEARS.map((data) => (
+                    <option key={data.nam} value={data.nam}>
+                      {data.nam}
+                    </option>
+                  ))}
                 </select>
               </Div>
               <Div>
                 <InputLabel>Hiện trạng</InputLabel>
-                <select>
+                <select
+                  value={IUCNitem.id}
+                  onChange={(e) =>
+                    setIUCNitem({ ...IUCNitem, id: e.target.value })
+                  }
+                >
                   <option value=""></option>
+                  {ListIUCN &&
+                    ListIUCN.map((data) => {
+                      return (
+                        <option key={data.id} value={data.id}>
+                          {data.ma_danh_muc}-{data.ten}
+                        </option>
+                      );
+                    })}
                 </select>
               </Div>
             </FlexDiv>
@@ -522,7 +654,7 @@ const FormInput = memo(() => {
 
       <ButtonWrapper>
         <ClsButton
-          title="+ Thêm mới"
+          title={loai.ten ? "Cập nhật" : "+ Thêm mới"}
           color="#fff"
           colorhover="#da3a2c"
           backcolor="#da2a1c"

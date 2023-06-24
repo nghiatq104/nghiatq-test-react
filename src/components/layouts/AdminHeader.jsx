@@ -52,7 +52,10 @@ export const HeaderContent = memo((props) => {
         />
       </LeftMenu>
 
-      <Header title={HeaderTitle} image={Api.logo} />
+      <Header
+        title={HeaderTitle}
+        image="http://wlp.howizbiz.com/static/img/logo.png"
+      />
 
       <RightMenu>
         <AccDropdown

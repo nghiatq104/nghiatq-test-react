@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import Api from "../constans/api";
 import { useNavigate } from "react-router-dom";
 import { notification } from "antd";
@@ -11,6 +11,47 @@ const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [token, setToken] = useState(_token);
+
+
+  useEffect(() => {
+    const getData = async () => {
+      console.log(">>>log");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      // redbook
+      const redbook = await axios.get(Api.red_book);
+      sessionStorage.setItem("redbook", JSON.stringify(redbook.data));
+      // iucn
+      const iucn = await axios.get(Api.red_book);
+      sessionStorage.setItem("iucn", JSON.stringify(iucn.data));
+      // kingdom
+      const kingdom = await axios.get(Api.kingdom, config);
+      sessionStorage.setItem("kingdom", JSON.stringify(kingdom.data));
+      // phylum
+      const phylum = await axios.get(Api.phylum, config);
+      sessionStorage.setItem("phylum", JSON.stringify(phylum.data));
+      // CLASS
+      const CLASS = await axios.get(Api.CLASS, config);
+      sessionStorage.setItem("CLASS", JSON.stringify(CLASS.data));
+      // order
+      const order = await axios.get(Api.order, config);
+      sessionStorage.setItem("order", JSON.stringify(order.data));
+      // family
+      const family = await axios.get(Api.family, config);
+      sessionStorage.setItem("family", JSON.stringify(family.data));
+      // genus
+      const genus = await axios.get(Api.genus, config);
+      sessionStorage.setItem("genus", JSON.stringify(genus.data));
+    };
+    const red_book = JSON.parse(localStorage.getItem("redbook"));
+    if (!red_book) {
+      getData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const getMe = async (token) => {
     const config = {
