@@ -95,7 +95,7 @@ const DeleteModal = memo(() => {
       },
     };
     try {
-      await axios.delete(Api.apiLoai + loai.id, config);
+      await axios.delete(Api.apiLoai + "/" + loai.id, config);
       setShowModal(false);
       setLoai({});
       setReLoad(!reload);

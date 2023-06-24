@@ -4,7 +4,7 @@ import styled from "styled-components";
 import FormInput from "../Form/FormInput";
 
 const Container = styled.div`
-  margin-top: 60px;
+  margin: 60px 0 33px 0;
   padding: 12px 24px;
   width: 100%;
 `;

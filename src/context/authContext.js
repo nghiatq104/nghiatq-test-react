@@ -4,7 +4,6 @@ import Api from "../constans/api";
 import { useNavigate } from "react-router-dom";
 import { notification } from "antd";
 
-
 export const authContext = createContext({ auth: null });
 let _token = localStorage.getItem("token");
 const AuthProvider = ({ children }) => {
@@ -52,7 +51,12 @@ const AuthProvider = ({ children }) => {
       navigate("/loai");
     } catch (error) {
       console.error(error);
-      openNotification('top',"error","Lỗi","Tên đăng nhập hoặc mật khẩu không chính xác")
+      openNotification(
+        "top",
+        "error",
+        "Lỗi",
+        "Tên đăng nhập hoặc mật khẩu không chính xác"
+      );
     }
   };
 
@@ -68,9 +72,14 @@ const AuthProvider = ({ children }) => {
       await axios.post(Api.logout, _token, config);
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      localStorage.removeItem("sach_do");
-      localStorage.removeItem("phan_loai");
-
+      sessionStorage.removeItem("redbook");
+      sessionStorage.removeItem("iucn");
+      sessionStorage.removeItem("kingdom");
+      sessionStorage.removeItem("phylum");
+      sessionStorage.removeItem("CLASS");
+      sessionStorage.removeItem("order");
+      sessionStorage.removeItem("family");
+      sessionStorage.removeItem("genus");
       setToken(null);
 
       // Đặt trạng thái đăng nhập thành false
@@ -81,13 +90,12 @@ const AuthProvider = ({ children }) => {
   };
 
   const [api, contextHolder] = notification.useNotification();
-  const openNotification = (placement, type='info',message,description) => {
+  const openNotification = (placement, type = "info", message, description) => {
     api[type]({
       message: message,
       description: description,
     });
   };
-
 
   return (
     <authContext.Provider
@@ -98,8 +106,7 @@ const AuthProvider = ({ children }) => {
         Logout,
         token,
         contextHolder,
-        openNotification
-
+        openNotification,
       }}
     >
       {children}

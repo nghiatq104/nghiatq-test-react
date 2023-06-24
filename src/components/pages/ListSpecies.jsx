@@ -115,7 +115,7 @@ const TableWraper = styled.div`
 
 const ListSpecies = memo(({ onChangePage }) => {
   let token = localStorage.getItem("token");
-  const dataSachDo = JSON.parse(localStorage.getItem("sach_do"));
+  const red_book = JSON.parse(localStorage.getItem("red_book"));
   const { contextHolder } = useContext(authContext);
   const { dataSpecies, currentPage, setCurrentPage, perpage, setPerPage } =
     useContext(apiContext);
@@ -134,13 +134,32 @@ const ListSpecies = memo(({ onChangePage }) => {
           Authorization: `Bearer ${token}`,
         },
       };
-      const responseRedBook = await axios.get(Api.sach_do);
-      localStorage.setItem("sach_do", JSON.stringify(responseRedBook.data));
-
-      const responsePhanLoai = await axios.get(Api.phan_loai_hoc, config);
-      localStorage.setItem("phan_loai", JSON.stringify(responsePhanLoai.data));
+      // redbook
+      const redbook = await axios.get(Api.red_book);
+      sessionStorage.setItem("redbook", JSON.stringify(redbook.data));
+      // iucn
+      const iucn = await axios.get(Api.red_book);
+      sessionStorage.setItem("iucn", JSON.stringify(iucn.data));
+      // kingdom
+      const kingdom = await axios.get(Api.kingdom, config);
+      sessionStorage.setItem("kingdom", JSON.stringify(kingdom.data));
+      // phylum
+      const phylum = await axios.get(Api.phylum, config);
+      sessionStorage.setItem("phylum", JSON.stringify(phylum.data));
+      // CLASS
+      const CLASS = await axios.get(Api.CLASS, config);
+      sessionStorage.setItem("CLASS", JSON.stringify(CLASS.data));
+      // order
+      const order = await axios.get(Api.order, config);
+      sessionStorage.setItem("order", JSON.stringify(order.data));
+      // family
+      const family = await axios.get(Api.family, config);
+      sessionStorage.setItem("family", JSON.stringify(family.data));
+      // genus
+      const genus = await axios.get(Api.genus, config);
+      sessionStorage.setItem("genus", JSON.stringify(genus.data));
     };
-    if (!dataSachDo) {
+    if (!red_book) {
       getData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
