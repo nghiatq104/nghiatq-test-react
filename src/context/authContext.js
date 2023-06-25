@@ -46,7 +46,7 @@ const AuthProvider = ({ children }) => {
       const genus = await axios.get(Api.genus, config);
       sessionStorage.setItem("genus", JSON.stringify(genus.data));
     };
-    const red_book = JSON.parse(localStorage.getItem("redbook"));
+    const red_book = JSON.parse(sessionStorage.getItem("redbook"));
     if (!red_book) {
       getData();
     }
