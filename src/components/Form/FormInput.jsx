@@ -132,11 +132,12 @@ const FormInput = memo(() => {
   const [genusList, setGenusList] = useState(genus);
   const [sachdo, setSachDo] = useState({
     nam: "2023",
-    id: loai.sach_dos ? loai.sach_dos[0].id : "",
+    id: loai.sach_dos[0] ? loai.sach_dos[0].id : "",
   });
+
   const [IUCNitem, setIUCNitem] = useState({
     nam: "2023",
-    id: loai.iucns ? loai.iucns[0].id : "",
+    id: loai.iucns[0] ? loai.iucns[0].id : "",
   });
   const ListIUCN = iucn && iucn[0].childs;
   const ListRedbook = redbook && redbook[0].childs;
@@ -477,6 +478,7 @@ const FormInput = memo(() => {
             <SeclectOptionWrapper>
               <Select
                 defaultValue=""
+                placeholder="Bộ"
                 value={speciesForm.order_id}
                 style={{
                   width: "100%",
