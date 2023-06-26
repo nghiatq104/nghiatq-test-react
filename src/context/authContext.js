@@ -12,7 +12,6 @@ const AuthProvider = ({ children }) => {
   const [isChecking, setIsChecking] = useState(false);
   const [token, setToken] = useState(_token);
 
-
   useEffect(() => {
     const getData = async () => {
       console.log(">>>log");
@@ -46,10 +45,11 @@ const AuthProvider = ({ children }) => {
       const genus = await axios.get(Api.genus, config);
       sessionStorage.setItem("genus", JSON.stringify(genus.data));
     };
-    const red_book = JSON.parse(sessionStorage.getItem("redbook"));
-    if (!red_book) {
-      getData();
-    }
+    // const red_book = JSON.parse(sessionStorage.getItem("redbook"));
+    // if (!red_book) {
+    // }
+    getData();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

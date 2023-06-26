@@ -6,7 +6,6 @@ import UserCard from "../Cards/UserCard";
 import { authContext } from "../../context/authContext";
 import Header from "./Header";
 import { HeaderTitle } from "../../constans/text";
-import Api from "../../constans/api";
 
 const DivContainer = styled.div`
   width: 100vw;
